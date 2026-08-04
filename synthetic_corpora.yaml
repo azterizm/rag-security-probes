@@ -1,6 +1,3 @@
-# Synthetic Corpora for UK RAG Security & Integrity Probing
-# Derived from Permissionless Audit findings & UK Domain Adaptations
-
 - document_id: "doc_companies_act_sec42"
   tenant_id: "tenant_legal_uk"
   metadata:

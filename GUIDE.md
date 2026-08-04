@@ -2,7 +2,7 @@
 
 This guide outlines the standard workflow for enriching the **RAG Security Probes** repository with new tests. 
 
-Always follow the pipeline: **Corpora → JSONL → Ground Truth → `prepare.py`**.
+Always follow the pipeline: **Corpora → JSONL → `prepare.py`**.
 
 ## 1. Update Corpora (`synthetic_corpora.yaml`)
 If your test requires new documents, plant them in the synthetic corpus. 
@@ -12,28 +12,26 @@ If your test requires new documents, plant them in the synthetic corpus.
     python3 scripts/generate_invariants.py --seed "your-seed"
     ```
 
-## 2. Add the Probe Dataset (`rag_probes.jsonl`)
-Append your query to the JSONL file as a single line of JSON. 
-*   **Requirements:** Must include `probe_id`, `family`, `class`, `tier`, `evaluator`, `query`, and `tenant_context`. Make sure it validates against `schemas/probe.schema.json`.
+## 2. Add the Probe (`rag_probes.jsonl`)
+Append your probe as a single line of JSON. Each record contains both the query **and** its ground truth inline:
+*   **Required:** `probe_id`, `family`, `class`, `evaluator`, `query`, `tenant_context`
+*   **Ground truth:** `must_contain`, `must_not_contain`, `max_verbatim_words` (as applicable)
+*   Must validate against `schemas/probe.schema.json`.
 
-## 3. Define Ground Truth (`ground_truth.json`)
-Append the expected passing/failing criteria to the JSON array.
-*   **Requirements:** The `probe_id` must match exactly. Specify `must_contain` and `must_not_contain` rules in flat format.
-
-## 4. Run the Prepare Script
+## 3. Run the Prepare Script
 **Never hand-edit the CSV files.** They are strictly auto-generated for GitHub rendering. 
-Once you have made your changes, run the single build command to hydrate corpora, validate schemas, generate CSVs, and cross-reference your probes:
+Once you have made your changes, run the single build command to hydrate corpora, validate schemas, and generate CSVs:
 
 ```bash
 python scripts/prepare.py
 ```
 *(Proceed only when this returns success for all steps).*
 
-## 5. Export for Testing
+## 4. Export for Testing
 To test your newly added probes, export them to your framework of choice:
 ```bash
 python scripts/export_probes.py --format all
 ```
 
-## 6. Commit
+## 5. Commit
 Once validation passes and CSVs are generated, commit and push your changes!

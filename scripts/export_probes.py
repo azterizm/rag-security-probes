@@ -8,31 +8,24 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DATASETS_FILE = REPO_ROOT / "rag_probes.jsonl"
-GROUND_TRUTH_FILE = REPO_ROOT / "ground_truth.json"
+PROBES_FILE = REPO_ROOT / "rag_probes.jsonl"
 
 def load_probes():
     probes = []
-    with open(DATASETS_FILE, "r") as f:
+    with open(PROBES_FILE, "r") as f:
         for line in f:
             if line.strip():
                 probes.append(json.loads(line))
     return probes
 
-def load_ground_truth():
-    with open(GROUND_TRUTH_FILE, "r") as f:
-        gt = json.load(f)
-    return {item["probe_id"]: item for item in gt}
-
-def export_promptfoo(probes, ground_truth, out_dir, endpoint_placeholder):
+def export_promptfoo(probes, out_dir, endpoint_placeholder):
     tests = []
     for p in probes:
         pid = p["probe_id"]
-        gt = ground_truth.get(pid, {})
         asserts = []
-        for contain in gt.get("must_contain", []):
+        for contain in p.get("must_contain", []):
             asserts.append({"type": "contains", "value": contain})
-        for not_contain in gt.get("must_not_contain", []):
+        for not_contain in p.get("must_not_contain", []):
             asserts.append({"type": "not-contains", "value": not_contain})
             
         tests.append({
@@ -67,21 +60,20 @@ def export_promptfoo(probes, ground_truth, out_dir, endpoint_placeholder):
         yaml.dump(config, f, sort_keys=False)
     print(f"Generated {out_file}")
 
-def export_pytest(probes, ground_truth, out_dir):
+def export_pytest(probes, out_dir):
     out_file = out_dir / "test_rag_probes.py"
     with open(out_file, "w") as f:
         f.write('import requests\nimport pytest\n\n')
         f.write('ENDPOINT_URL = "https://YOUR-RAG-ENDPOINT/v1/query"\n\n')
         for p in probes:
             pid = p["probe_id"]
-            gt = ground_truth.get(pid, {})
             f.write(f'def test_{pid.replace("-", "_").lower()}():\n')
             f.write(f'    query = {repr(p["query"])}\n')
             f.write(f'    response = requests.post(ENDPOINT_URL, json={{"query": query}}, headers={{"Content-Type": "application/json"}})\n')
             f.write(f'    answer = response.json().get("answer", "")\n')
-            for contain in gt.get("must_contain", []):
+            for contain in p.get("must_contain", []):
                 f.write(f'    assert {repr(contain)} in answer\n')
-            for not_contain in gt.get("must_not_contain", []):
+            for not_contain in p.get("must_not_contain", []):
                 f.write(f'    assert {repr(not_contain)} not in answer\n')
             f.write('\n')
     print(f"Generated {out_file}")
@@ -105,17 +97,10 @@ def export_curl(probes, out_dir, endpoint_placeholder):
     os.chmod(out_file, 0o755)
     print(f"Generated {out_file}")
 
-def export_manifest(probes, ground_truth, out_dir):
+def export_manifest(probes, out_dir):
     out_file = out_dir / "probe_manifest.json"
-    manifest = []
-    for p in probes:
-        pid = p["probe_id"]
-        gt = ground_truth.get(pid, {})
-        entry = {**p, "ground_truth": gt}
-        manifest.append(entry)
-        
     with open(out_file, "w") as f:
-        json.dump(manifest, f, indent=2)
+        json.dump(probes, f, indent=2)
     print(f"Generated {out_file}")
 
 def main():
@@ -130,16 +115,15 @@ def main():
     out_dir.mkdir(exist_ok=True)
     
     probes = load_probes()
-    ground_truth = load_ground_truth()
     
     if args.format in ["promptfoo", "all"]:
-        export_promptfoo(probes, ground_truth, out_dir, args.endpoint_placeholder)
+        export_promptfoo(probes, out_dir, args.endpoint_placeholder)
     if args.format in ["pytest", "all"]:
-        export_pytest(probes, ground_truth, out_dir)
+        export_pytest(probes, out_dir)
     if args.format in ["curl", "all"]:
         export_curl(probes, out_dir, args.endpoint_placeholder)
     if args.format in ["manifest", "all"]:
-        export_manifest(probes, ground_truth, out_dir)
+        export_manifest(probes, out_dir)
 
 if __name__ == "__main__":
     main()

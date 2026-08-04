@@ -46,4 +46,4 @@ Once generated, simply fill in your endpoint URL and run your framework.
 > - **Testing Restrictions:** Firing these probes against third-party SaaS trial accounts without written authorization violates SaaS Terms of Service and constitutes an offense under the **Computer Misuse Act 1990**.
 > - **Outreach Line:** When contacting prospects, Memon Systems Ltd uses *only* ordinary-use probes (citation checks, non-determinism diffs) on public trials, while linking to this published dataset as standing methodology.
 
-For the full, domain-specific paid diagnostic, visit [Memon Systems Ltd](https://memonsystems.com).
+For the full, domain-specific paid diagnostic, visit [Memon Systems Ltd](https://memonsystems.com/engagements).

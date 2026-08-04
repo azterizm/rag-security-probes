@@ -31,7 +31,8 @@ def export_promptfoo(probes, out_dir, endpoint_placeholder):
         tests.append({
             "description": f"{pid}: {p['family']} / {p['class']}",
             "vars": {
-                "query": p["query"]
+                "query": p["query"],
+                "tenant_id": p.get("issuing_tenant_id", "default")
             },
             "assert": asserts
         })
@@ -44,7 +45,8 @@ def export_promptfoo(probes, out_dir, endpoint_placeholder):
                     "url": endpoint_placeholder,
                     "method": "POST",
                     "headers": {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "X-Tenant-ID": "{{tenant_id}}"
                     },
                     "body": {
                         "query": "{{query}}"
@@ -69,7 +71,7 @@ def export_pytest(probes, out_dir):
             pid = p["probe_id"]
             f.write(f'def test_{pid.replace("-", "_").lower()}():\n')
             f.write(f'    query = {repr(p["query"])}\n')
-            f.write(f'    response = requests.post(ENDPOINT_URL, json={{"query": query}}, headers={{"Content-Type": "application/json"}})\n')
+            f.write(f'    response = requests.post(ENDPOINT_URL, json={{"query": query}}, headers={{"Content-Type": "application/json", "X-Tenant-ID": "{p.get("issuing_tenant_id", "default")}"}})\n')
             f.write(f'    answer = response.json().get("answer", "")\n')
             for contain in p.get("must_contain", []):
                 f.write(f'    assert {repr(contain)} in answer\n')
@@ -89,6 +91,7 @@ def export_curl(probes, out_dir, endpoint_placeholder):
             f.write(f'echo "=== {pid}: {p["family"]} / {p["class"]} ==="\n')
             f.write(f'curl -s -X POST "$ENDPOINT_URL" \\\n')
             f.write(f'  -H "Content-Type: application/json" \\\n')
+            f.write(f'  -H "X-Tenant-ID: {p.get("issuing_tenant_id", "default")}" \\\n')
             f.write(f'  -d {repr(json.dumps({"query": p["query"]}))} \\\n')
             f.write(f'  > {pid.lower().replace("-", "_")}_response.json\n')
             f.write(f'echo "Response saved to {pid.lower().replace("-", "_")}_response.json"\n')

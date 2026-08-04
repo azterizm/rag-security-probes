@@ -1,4 +1,4 @@
-# Decoupled Gaming-Proof Battery — Implementation Plan
+# RAG Security Probes — Implementation Plan
 
 Published by **Memon Systems Ltd** as a separate, standalone GitHub repository.
 
@@ -26,7 +26,6 @@ The CSV is generated from the JSONL (not hand-maintained). A `scripts/jsonl_to_c
 > **Legal Boundary Policy (Published by Memon Systems Ltd):**
 > - **Self-Service Usage:** The published probe datasets contain instruction injection payloads and cross-tenant canary tests designed for vendor internal dev/staging environments.
 > - **Testing Restrictions:** Firing these probes against third-party SaaS trial accounts without written authorization violates SaaS Terms of Service and constitutes an offense under the **Computer Misuse Act 1990**.
-> - **Outreach Line:** When contacting prospects, Memon Systems Ltd uses *only* ordinary-use probes (citation checks, non-determinism diffs) on public trials, while linking to this published dataset as standing methodology.
 
 ---
 

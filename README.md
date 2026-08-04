@@ -1,8 +1,8 @@
-# Decoupled Gaming-Proof Battery
+# RAG Security Probes
 
 *Published by [Memon Systems Ltd](https://memonsystems.com)*
 
-The Decoupled Gaming-Proof Battery is a collection of probe datasets designed to test security and isolation boundaries in Retrieval-Augmented Generation (RAG) pipelines. These probes test whether a vendor's shared index maintains data isolation between tenants, resists prompt injection overrides, correctly routes queries within specified namespaces, prevents verbatim reproduction of proprietary/licensed content, and correctly honors point-in-time constraints. This battery is designed for internal testing and self-service diagnostics on synthetic RAG deployments.
+RAG Security Probes is a collection of probe datasets designed to test security and isolation boundaries in Retrieval-Augmented Generation (RAG) pipelines. These probes test whether a vendor's shared index maintains data isolation between tenants, resists prompt injection overrides, correctly routes queries within specified namespaces, prevents verbatim reproduction of proprietary/licensed content, and correctly honors point-in-time constraints. This battery is designed for internal testing and self-service diagnostics on synthetic RAG deployments.
 
 ## Probe Summary
 

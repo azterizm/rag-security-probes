@@ -10,6 +10,13 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROBES_FILE = REPO_ROOT / "rag_probes.jsonl"
 
+GENERAL_BANNER = """# ⚠️  SECURITY PROBES — AUTHORIZATION WARNING
+# This battery contains injection payloads and cross-tenant canary tests.
+# Ensure you have explicit authorization before running against third-party systems.
+# See README.md Legal Boundary Policy.
+
+"""
+
 def load_probes():
     probes = []
     with open(PROBES_FILE, "r") as f:
@@ -24,9 +31,15 @@ def export_promptfoo(probes, out_dir, endpoint_placeholder):
         pid = p["probe_id"]
         asserts = []
         for contain in p.get("must_contain", []):
-            asserts.append({"type": "contains", "value": contain})
+            asserts.append({"type": "icontains", "value": contain})
+        for contain_any in p.get("must_contain_any", []):
+            js_conds = [f"output.toLowerCase().includes({json.dumps(s.lower())})" for s in contain_any]
+            asserts.append({
+                "type": "javascript",
+                "value": " || ".join(js_conds)
+            })
         for not_contain in p.get("must_not_contain", []):
-            asserts.append({"type": "not-contains", "value": not_contain})
+            asserts.append({"type": "not-icontains", "value": not_contain})
             
         tests.append({
             "description": f"{pid}: {p['family']} / {p['class']}",
@@ -65,6 +78,7 @@ def export_promptfoo(probes, out_dir, endpoint_placeholder):
 def export_pytest(probes, out_dir):
     out_file = out_dir / "test_rag_probes.py"
     with open(out_file, "w") as f:
+        f.write(GENERAL_BANNER)
         f.write('import requests\nimport pytest\n\n')
         f.write('ENDPOINT_URL = "https://YOUR-RAG-ENDPOINT/v1/query"\n\n')
         for p in probes:
@@ -73,10 +87,14 @@ def export_pytest(probes, out_dir):
             f.write(f'    query = {repr(p["query"])}\n')
             f.write(f'    response = requests.post(ENDPOINT_URL, json={{"query": query}}, headers={{"Content-Type": "application/json", "X-Tenant-ID": "{p.get("issuing_tenant_id", "default")}"}})\n')
             f.write(f'    answer = response.json().get("answer", "")\n')
+            f.write(f'    answer_lower = answer.lower()\n')
             for contain in p.get("must_contain", []):
-                f.write(f'    assert {repr(contain)} in answer\n')
+                f.write(f'    assert {repr(contain.lower())} in answer_lower\n')
+            if p.get("must_contain_any"):
+                any_list = [repr(s.lower()) for s in p["must_contain_any"]]
+                f.write(f'    assert any(s in answer_lower for s in [{", ".join(any_list)}])\n')
             for not_contain in p.get("must_not_contain", []):
-                f.write(f'    assert {repr(not_contain)} not in answer\n')
+                f.write(f'    assert {repr(not_contain.lower())} not in answer_lower\n')
             f.write('\n')
     print(f"Generated {out_file}")
 
@@ -84,7 +102,7 @@ def export_curl(probes, out_dir, endpoint_placeholder):
     out_file = out_dir / "run_probes.sh"
     with open(out_file, "w") as f:
         f.write('#!/usr/bin/env bash\n')
-        f.write('# RAG Security Probes — Generated curl commands\n')
+        f.write(GENERAL_BANNER)
         f.write(f'ENDPOINT_URL="{endpoint_placeholder}"\n\n')
         for p in probes:
             pid = p["probe_id"]
@@ -96,7 +114,6 @@ def export_curl(probes, out_dir, endpoint_placeholder):
             f.write(f'  > {pid.lower().replace("-", "_")}_response.json\n')
             f.write(f'echo "Response saved to {pid.lower().replace("-", "_")}_response.json"\n')
             f.write('echo ""\n\n')
-    
     os.chmod(out_file, 0o755)
     print(f"Generated {out_file}")
 

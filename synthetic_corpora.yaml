@@ -1,44 +1,54 @@
-- document_id: "doc_companies_act_sec42"
+- document_id: "doc_ravensbourne_sec42"
   tenant_id: "tenant_legal_uk"
   metadata:
-    title: "Companies Act 2006 - Section 42"
-    statute_id: "CompaniesAct2006"
+    title: "Ravensbourne Commercial Tenancies Act 2019 - Section 42"
+    statute_id: "RavensbourneAct2019"
     jurisdiction: "UK"
-    domain: "corporate_law"
+    domain: "commercial_property"
     version: "2026.1"
+    fictional: true
   content: |
-    Companies Act 2006. Section 42. Company contracts: England and Wales and Northern Ireland.
-    (1) Under the law of England and Wales or Northern Ireland a contract may be made:
-    (a) by a company, by writing under its common seal, or
-    (b) on behalf of a company, by any person acting under its authority, express or implied.
-    (2) Any formality required by law in the case of a contract made by an individual aims to apply, unless a contrary intention appears, to a contract made by or on behalf of a company.
+    Ravensbourne Commercial Tenancies Act 2019. Section 42. Restrictions on forfeiture for non-payment of service charges.
+    (1) A landlord of premises let under a commercial tenancy may not exercise a right of forfeiture for non-payment of a service charge unless—
+    (a) the amount of the service charge has been finally determined by a tribunal or agreed by the tenant in writing, and
+    (b) a period of not less than 28 days has elapsed since the determination or agreement.
+    (2) For the purposes of this section, "service charge" means an amount payable by the tenant as part of or in addition to the rent which is payable, directly or indirectly, for services, repairs, maintenance, insurance, or the landlord's costs of management.
+    (3) Nothing in this section affects the right of a landlord to forfeit a commercial tenancy on grounds other than non-payment of a service charge.
 
-- document_id: "doc_insolvency_act_sec42"
+- document_id: "doc_blackmere_sec42"
   tenant_id: "tenant_legal_uk"
   metadata:
-    title: "Insolvency Act 1986 - Section 42"
-    statute_id: "InsolvencyAct1986"
+    title: "Blackmere Financial Oversight Act 2021 - Section 42"
+    statute_id: "BlackmereAct2021"
     jurisdiction: "UK"
-    domain: "insolvency_law"
+    domain: "financial_regulation"
     version: "2026.1"
+    fictional: true
   content: |
-    Insolvency Act 1986. Section 42. Powers of administrative receiver.
-    (1) The administrative receiver of a company has the powers specified in Schedule 1 to this Act.
-    (2) An administrative receiver is deemed to be the agent of the company unless and until the company goes into liquidation.
-    (3) A person dealing with the administrative receiver in good faith and for value is not concerned to inquire whether the receiver is acting within his powers.
+    Blackmere Financial Oversight Act 2021. Section 42. Duty to report material discrepancies.
+    (1) A regulated person who identifies a material discrepancy in a financial return submitted to the Authority must report the discrepancy in writing within 14 days of identification.
+    (2) The report under subsection (1) must specify—
+    (a) the nature of the discrepancy,
+    (b) the financial return in which it appears, and
+    (c) such steps as the regulated person has taken or proposes to take to rectify the discrepancy.
+    (3) A regulated person who fails to comply with subsection (1) commits a regulatory offence and is liable on summary conviction to a fine not exceeding level 5 on the standard scale.
 
-- document_id: "doc_landlord_tenant_sec42"
+- document_id: "doc_thornfield_sec42"
   tenant_id: "tenant_legal_uk"
   metadata:
-    title: "Landlord and Tenant Act 1987 - Section 42"
-    statute_id: "LandlordTenantAct1987"
+    title: "Thornfield Leasehold Reform Act 2023 - Section 42"
+    statute_id: "ThornfieldAct2023"
     jurisdiction: "UK"
-    domain: "property_law"
+    domain: "leasehold_reform"
     version: "2026.1"
+    fictional: true
   content: |
-    Landlord and Tenant Act 1987. Section 42. Service charge funds to be held in trust.
-    (1) This section applies to service charges payable by tenants of dwellings in England and Wales.
-    (2) Any sums paid by tenants by way of service charges shall be held in trust by the payee for the purpose of meeting the relevant costs incurred in connection with the matters for which the service charges are payable.
+    Thornfield Leasehold Reform Act 2023. Section 42. Right of qualifying tenants to request management audits.
+    (1) A qualifying tenant of a dwelling held under a long lease may serve a notice on the landlord requesting an independent audit of the management of the building.
+    (2) For the purposes of this section, a tenant is a qualifying tenant if—
+    (a) the tenant holds a lease originally granted for a term exceeding 21 years, and
+    (b) the tenant has been in occupation for a continuous period of not less than 2 years immediately preceding the date of the notice.
+    (3) The landlord must, within 56 days of receiving a notice under subsection (1), appoint an auditor who is a member of a recognised supervisory body and provide the auditor with access to all records relating to the management of the building.
 
 - document_id: "doc_uk_commercial_lease"
   tenant_id: "tenant_legal_uk"

@@ -15,8 +15,15 @@ for jsonl_file in REPO_ROOT.glob("*.jsonl"):
                 rows.append(json.loads(line))
     if not rows:
         continue
+        
+    fieldnames = []
+    for row in rows:
+        for k in row.keys():
+            if k not in fieldnames:
+                fieldnames.append(k)
+                
     with open(csv_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
     print(f"  {jsonl_file.name} -> {csv_file.name}")

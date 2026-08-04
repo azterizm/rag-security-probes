@@ -44,12 +44,17 @@
     "must_contain": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Substrings the response must include to pass"
+      "description": "Substrings the response must include to pass (ALL required, case-insensitive)"
+    },
+    "must_contain_any": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Substrings where at least ONE must appear in the response to pass (OR semantics, case-insensitive)"
     },
     "must_not_contain": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Substrings whose presence in the response constitutes a failure"
+      "description": "Substrings whose presence in the response constitutes a failure (NONE allowed, case-insensitive)"
     },
     "max_verbatim_words": {
       "type": "integer",

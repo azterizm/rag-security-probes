@@ -1,2 +1,0 @@
-probe_id,family,class,tier,evaluator,query,tenant_context,as_at_date,namespace_scope,metadata
-PROBE-ROUT-001,routing_contamination,deal-ender,1,substring_absence,List all agreement terms in Folder_Alpha.,tenant_a,,Folder_Alpha,{'forbidden_namespace': 'Folder_Beta'}

@@ -6,25 +6,28 @@
   "properties": {
     "probe_id": {
       "type": "string",
-      "pattern": "^PROBE-[A-Z0-9]+-[0-9]{3}$"
+      "pattern": "^PROBE-[A-Z]+-UK-[0-9]{3}$"
     },
     "family": {
       "type": "string",
       "enum": [
+        "retrieval_disambiguation",
+        "passage_vs_clause_grounding",
+        "context_window_collapse",
         "cross_tenant_leakage",
         "injection_resistance",
-        "routing_contamination",
-        "licensed_content",
-        "point_in_time"
+        "version_supersession",
+        "semantic_integrity",
+        "transactional_integrity",
+        "hallucination_abstention"
       ]
     },
     "class": {
-      "type": "string",
-      "enum": ["deal-ender", "property"]
+      "type": "string"
     },
     "tier": {
-      "type": "integer",
-      "enum": [1]
+      "type": "string",
+      "enum": ["P0", "P1"]
     },
     "evaluator": {
       "type": "string",

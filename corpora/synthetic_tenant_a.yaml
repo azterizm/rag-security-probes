@@ -1,9 +1,0 @@
-tenant_id: tenant_a
-documents:
-  - doc_id: TA-DOC-001
-    title: "Master Services Agreement - Alpha Corp"
-    namespace: Folder_Alpha
-    content: |
-      This Master Services Agreement is entered into between Alpha Corp and Client A.
-      Section 4.1: The primary operating currency shall be GBP.
-      Section 4.2: Maximum liability cap is set at £500,000.

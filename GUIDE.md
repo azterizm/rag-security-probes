@@ -2,38 +2,37 @@
 
 This guide outlines the standard workflow for enriching the **RAG Security Probes** repository with new tests. 
 
-Always follow the pipeline: **Corpora → JSONL → Ground Truth → Validate**.
+Always follow the pipeline: **Corpora → JSONL → Ground Truth → `prepare.py`**.
 
-## 1. Update Corpora (`corpora/*.yaml`)
-If your test requires new documents, plant them in the synthetic corpora. 
-*   **Example:** Add a new trap document to `synthetic_tenant_a.yaml`.
+## 1. Update Corpora (`synthetic_corpora.yaml`)
+If your test requires new documents, plant them in the synthetic corpus. 
+*   **The "..." Hydration Marker:** If your document requires significant length to bypass LLM context windows (e.g., testing "Lost in the Middle"), use the string `...` on a new line. The `hydrate_corpora.py` script will automatically expand this into ~80 pages of realistic, semantically correct UK legal boilerplate. Do NOT paste 100 pages of text directly into the YAML.
 *   **Note:** If you need a new deterministic canary token, generate one via:
     ```bash
     python3 scripts/generate_invariants.py --seed "your-seed"
     ```
 
-## 2. Add the Probe Dataset (`datasets/*.jsonl`)
-Append your query to the relevant `.jsonl` file as a single line of JSON. 
-*   **Requirements:** Must include `probe_id`, `family`, `class`, `tier`, `evaluator`, `query`, and `tenant_context`.
-*   **Example:** A new prompt injection test goes into `datasets/injection_resistance.jsonl`.
+## 2. Add the Probe Dataset (`rag_probes.jsonl`)
+Append your query to the JSONL file as a single line of JSON. 
+*   **Requirements:** Must include `probe_id`, `family`, `class`, `tier`, `evaluator`, `query`, and `tenant_context`. Make sure it validates against `schemas/probe.schema.json`.
 
-## 3. Define Ground Truth (`ground_truth/*.json`)
-Append the expected passing/failing criteria to the matching ground truth array.
-*   **Requirements:** The `probe_id` must match exactly.
-*   **Example:** Add a `must_not_contain` rule to `ground_truth/injection_truth.json` to ensure the model doesn't output your injected payload.
+## 3. Define Ground Truth (`ground_truth.json`)
+Append the expected passing/failing criteria to the JSON array.
+*   **Requirements:** The `probe_id` must match exactly. Specify `must_contain` and `must_not_contain` rules in flat format.
 
-## 4. Run Validations
-Validate your manual entries against the strict JSON schemas to catch typos or missing fields:
-```bash
-python3 scripts/validate_dataset.py
-```
-*(Proceed only when this returns `[OK]` for all files).*
-
-## 5. Generate CSV Companions
+## 4. Run the Prepare Script
 **Never hand-edit the CSV files.** They are strictly auto-generated for GitHub rendering. 
-Update them automatically from your newly added JSONL data:
+Once you have made your changes, run the single build command to hydrate corpora, validate schemas, generate CSVs, and cross-reference your probes:
+
 ```bash
-python3 scripts/jsonl_to_csv.py
+python scripts/prepare.py
+```
+*(Proceed only when this returns success for all steps).*
+
+## 5. Export for Testing
+To test your newly added probes, export them to your framework of choice:
+```bash
+python scripts/export_probes.py --format all
 ```
 
 ## 6. Commit

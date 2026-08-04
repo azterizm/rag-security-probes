@@ -13,7 +13,7 @@ def validate_datasets():
     with open(REPO_ROOT / "schemas" / "ground_truth.schema.json") as f:
         gt_schema = json.load(f)
 
-    for jsonl_file in (REPO_ROOT / "datasets").glob("*.jsonl"):
+    for jsonl_file in REPO_ROOT.glob("*.jsonl"):
         print(f"Validating: {jsonl_file.name}")
         with open(jsonl_file) as f:
             for line in f:
@@ -21,7 +21,7 @@ def validate_datasets():
                     jsonschema.validate(json.loads(line), probe_schema)
         print(f"  [OK] {jsonl_file.name}")
 
-    for gt_file in (REPO_ROOT / "ground_truth").glob("*.json"):
+    for gt_file in REPO_ROOT.glob("*truth.json"):
         print(f"Validating: {gt_file.name}")
         with open(gt_file) as f:
             for record in json.load(f):

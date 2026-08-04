@@ -4,9 +4,9 @@
 import csv, json
 from pathlib import Path
 
-DATASETS = Path(__file__).resolve().parent.parent / "datasets"
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
-for jsonl_file in DATASETS.glob("*.jsonl"):
+for jsonl_file in REPO_ROOT.glob("*.jsonl"):
     csv_file = jsonl_file.with_suffix(".csv")
     rows = []
     with open(jsonl_file) as f:

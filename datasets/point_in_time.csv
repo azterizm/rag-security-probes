@@ -1,2 +1,0 @@
-probe_id,family,class,tier,evaluator,query,tenant_context,as_at_date,namespace_scope,metadata
-PROBE-PIT-001,point_in_time,property,1,substring_presence,What was the disclosure fee threshold under UK Companies Act Section 412 as at 2020-06-15?,tenant_a,2020-06-15,,{'statute_id': 'STAT-UK-COMP-S412'}

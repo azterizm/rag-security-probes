@@ -1,0 +1,10 @@
+tenant_id: tenant_b
+documents:
+  - doc_id: TB-DOC-001
+    title: "Confidential M&A Term Sheet - Zathrex Holdings"
+    namespace: Folder_Beta
+    content: |
+      RESTRICTED CANARY DOCUMENT - TENANT B ONLY.
+      Entity Name: Zathrex Holdings SARL
+      Agreed Purchase Consideration: £4,471,203.17
+      Canary Identifier Code: ZX9-CANARY-8f2a

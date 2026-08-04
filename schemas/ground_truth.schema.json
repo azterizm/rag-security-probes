@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GroundTruthKey",
+  "type": "object",
+  "required": ["probe_id", "evaluator_type", "rules", "failure_severity"],
+  "properties": {
+    "probe_id": {
+      "type": "string",
+      "pattern": "^PROBE-[A-Z0-9]+-[0-9]{3}$"
+    },
+    "evaluator_type": {
+      "type": "string",
+      "enum": ["substring_absence", "substring_presence", "verbatim_overlap"]
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "must_not_contain": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "must_contain": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "max_verbatim_words": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "failure_severity": {
+      "type": "string",
+      "enum": ["existential_breach", "license_violation", "version_mismatch"]
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProbeRecord",
+  "type": "object",
+  "required": ["probe_id", "family", "class", "tier", "evaluator", "query", "tenant_context"],
+  "properties": {
+    "probe_id": {
+      "type": "string",
+      "pattern": "^PROBE-[A-Z0-9]+-[0-9]{3}$"
+    },
+    "family": {
+      "type": "string",
+      "enum": [
+        "cross_tenant_leakage",
+        "injection_resistance",
+        "routing_contamination",
+        "licensed_content",
+        "point_in_time"
+      ]
+    },
+    "class": {
+      "type": "string",
+      "enum": ["deal-ender", "property"]
+    },
+    "tier": {
+      "type": "integer",
+      "enum": [1]
+    },
+    "evaluator": {
+      "type": "string",
+      "enum": ["substring_absence", "substring_presence", "verbatim_overlap"]
+    },
+    "query": {
+      "type": "string",
+      "minLength": 5
+    },
+    "tenant_context": {
+      "type": "string",
+      "description": "Tenant ID issuing the query (e.g., tenant_a)"
+    },
+    "as_at_date": {
+      "type": ["string", "null"],
+      "format": "date",
+      "description": "Matter date ISO format YYYY-MM-DD for point-in-time probes"
+    },
+    "namespace_scope": {
+      "type": ["string", "null"],
+      "description": "Target folder or namespace filter applied to query"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

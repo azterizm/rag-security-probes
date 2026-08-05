@@ -40,6 +40,13 @@ def export_promptfoo(probes, out_dir, endpoint_placeholder):
             })
         for not_contain in p.get("must_not_contain", []):
             asserts.append({"type": "not-icontains", "value": not_contain})
+        if p.get("pass_if_any_present"):
+            flat_list = [s for sublist in p["pass_if_any_present"] for s in sublist]
+            js_conds = [f"output.toLowerCase().includes({json.dumps(s.lower())})" for s in flat_list]
+            asserts.append({
+                "type": "javascript",
+                "value": " || ".join(js_conds)
+            })
             
         tests.append({
             "description": f"{pid}: {p['family']} / {p['class']}",
@@ -95,6 +102,9 @@ def export_pytest(probes, out_dir):
                 f.write(f'    assert any(s in answer_lower for s in [{", ".join(any_list)}])\n')
             for not_contain in p.get("must_not_contain", []):
                 f.write(f'    assert {repr(not_contain.lower())} not in answer_lower\n')
+            if p.get("pass_if_any_present"):
+                flat_list = [repr(s.lower()) for sublist in p["pass_if_any_present"] for s in sublist]
+                f.write(f'    assert any(s in answer_lower for s in [{", ".join(flat_list)}])\n')
             f.write('\n')
     print(f"Generated {out_file}")
 

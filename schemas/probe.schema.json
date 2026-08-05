@@ -27,7 +27,7 @@
     },
     "evaluator": {
       "type": "string",
-      "enum": ["substring_absence", "substring_presence", "verbatim_overlap"]
+      "enum": ["substring_absence", "substring_presence", "verbatim_overlap", "disambiguation_required"]
     },
     "query": {
       "type": "string",
@@ -70,6 +70,16 @@
       "description": "Target folder or namespace filter applied to query"
     },
     "metadata": {
+      "type": "object"
+    },
+    "pass_if_any_present": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "fail_if_bare_answer": {
       "type": "object"
     }
   },

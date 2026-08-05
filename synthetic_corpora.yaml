@@ -150,3 +150,154 @@
     ...
     SCHEDULE 4 - ENVIRONMENTAL INDEMNITY & LIMITATION PERIODS (Page 82).
     Paragraph 4.2: Notwithstanding Section 12 or any general warranty limitation period, all claims arising under the Environmental Indemnity in Schedule 4 shall remain valid and enforceable for a limitation period of exactly 7 years following Completion.
+
+
+- document_id: "doc_saas_acmecloud"
+  tenant_id: "tenant_corp_a"
+  metadata:
+    title: "AcmeCloud UK SaaS Subscription Agreement"
+    doc_type: "saas_agreement"
+    vendor: "AcmeCloud Ltd"
+    contract_ref: "AC-SaaS-2026-041"
+    jurisdiction: "England and Wales"
+    effective_date: "2026-01-15"
+    version: "2026.1"
+    hydration_marker: true
+  content: |
+    ACMECLOUD LTD — UK SaaS SUBSCRIPTION AGREEMENT
+    Contract Reference: AC-SaaS-2026-041
+    Effective Date: 15 January 2026
+
+    1. SERVICE DESCRIPTION
+    AcmeCloud Ltd ("the Provider") shall deliver a cloud-based enterprise document management
+    and workflow automation platform ("the Service") to the Customer under the terms set out herein.
+
+    2. SUBSCRIPTION TERM AND RENEWAL
+    The initial subscription term is 12 months from the Effective Date. The agreement shall
+    automatically renew for successive 12-month periods unless either party provides written
+    notice of non-renewal at least 30 days prior to the end of the then-current term.
+    ...
+
+    3. TERMINATION
+    3.1 Either party may terminate this Agreement for convenience by providing 30 days' written
+    notice to the other party.
+    3.2 Either party may terminate immediately upon material breach if the breaching party fails
+    to cure such breach within 14 days of written notice.
+
+    4. SERVICE LEVEL AGREEMENT
+    4.1 The Provider guarantees a monthly platform availability of 99.5% measured across all
+    UK-hosted production instances, excluding scheduled maintenance windows.
+    4.2 Scheduled maintenance shall not exceed 4 hours per calendar month and shall be
+    conducted between 02:00–06:00 GMT on Sundays with 72 hours prior notice.
+    4.3 Service Credits: For each full 0.1% below the 99.5% SLA target in a given month,
+    the Customer shall receive a service credit equal to 5% of that month's subscription fee,
+    up to a maximum credit of 30% of the monthly fee.
+
+    5. DATA PROTECTION AND RESIDENCY
+    5.1 All Customer Data shall be processed and stored exclusively within the Provider's
+    London data centre (UK-LON-DC1), in compliance with the UK Data Protection Act 2018
+    and UK GDPR.
+    5.2 The Provider shall not transfer Customer Data outside the United Kingdom without
+    prior written consent.
+
+    6. DATA RETENTION AND DELETION
+    6.1 Upon termination or expiry of this Agreement, the Provider shall retain Customer Data
+    for a period of 30 days to facilitate data export and migration.
+    6.2 After the 30-day retention period, all Customer Data shall be permanently and
+    irreversibly deleted from all production systems, backups, and disaster recovery environments
+    within 14 business days.
+
+    7. PAYMENT TERMS
+    7.1 Subscription fees are payable quarterly in advance.
+    7.2 All invoices are due within Net 30 days of the invoice date.
+    7.3 Late payments shall accrue interest at 3% above the Bank of England base rate.
+
+    8. LIMITATION OF LIABILITY
+    8.1 The Provider's aggregate liability under this Agreement shall not exceed 100% of the
+    total fees paid by the Customer in the 12-month period immediately preceding the claim.
+    8.2 Neither party shall be liable for indirect, consequential, or special damages.
+
+    9. SUPPORT
+    9.1 Standard support is available during UK business hours (09:00–18:00 GMT, Monday to Friday).
+    9.2 Support requests shall be submitted via the Provider's online ticketing portal.
+    9.3 Priority 1 incidents (complete service outage) shall receive an initial response within
+    2 hours during business hours.
+
+    10. GOVERNING LAW
+    This Agreement shall be governed by and construed in accordance with the laws of England
+    and Wales. The courts of England shall have exclusive jurisdiction.
+
+- document_id: "doc_saas_zenithhost"
+  tenant_id: "tenant_corp_a"
+  metadata:
+    title: "ZenithHost UK SaaS Subscription Agreement"
+    doc_type: "saas_agreement"
+    vendor: "ZenithHost Technologies Plc"
+    contract_ref: "ZH-SaaS-2026-087"
+    jurisdiction: "England and Wales"
+    effective_date: "2026-03-01"
+    version: "2026.1"
+    hydration_marker: true
+  content: |
+    ZENITHHOST TECHNOLOGIES PLC — UK SaaS SUBSCRIPTION AGREEMENT
+    Contract Reference: ZH-SaaS-2026-087
+    Effective Date: 1 March 2026
+
+    1. SERVICE DESCRIPTION
+    ZenithHost Technologies Plc ("the Provider") shall deliver a cloud-based enterprise document
+    management and collaboration platform ("the Service") to the Customer under the terms set out herein.
+
+    2. SUBSCRIPTION TERM AND RENEWAL
+    The initial subscription term is 24 months from the Effective Date. The agreement shall
+    automatically renew for successive 12-month periods unless either party provides written
+    notice of non-renewal at least 90 days prior to the end of the then-current term.
+    ...
+
+    3. TERMINATION
+    3.1 Either party may terminate this Agreement for convenience by providing 90 days' written
+    notice to the other party.
+    3.2 Either party may terminate immediately upon material breach if the breaching party fails
+    to cure such breach within 30 days of written notice.
+
+    4. SERVICE LEVEL AGREEMENT
+    4.1 The Provider guarantees a monthly platform availability of 99.99% measured across all
+    UK-hosted production instances, excluding scheduled maintenance windows.
+    4.2 Scheduled maintenance shall not exceed 2 hours per calendar month and shall be
+    conducted between 01:00–03:00 GMT on Saturdays with 5 business days prior notice.
+    4.3 Service Credits: For each full 0.01% below the 99.99% SLA target in a given month,
+    the Customer shall receive a service credit equal to 10% of that month's subscription fee,
+    up to a maximum credit of 50% of the monthly fee.
+
+    5. DATA PROTECTION AND RESIDENCY
+    5.1 All Customer Data shall be processed and stored exclusively within the Provider's
+    Manchester data centre (UK-MAN-DC2), in compliance with the UK Data Protection Act 2018
+    and UK GDPR.
+    5.2 The Provider shall not transfer Customer Data outside the United Kingdom without
+    prior written consent.
+
+    6. DATA RETENTION AND DELETION
+    6.1 Upon termination or expiry of this Agreement, the Provider shall retain Customer Data
+    for a period of 60 days to facilitate data export and migration.
+    6.2 After the 60-day retention period, all Customer Data shall be permanently and
+    irreversibly deleted from all production systems, backups, and disaster recovery environments
+    within 7 business days.
+
+    7. PAYMENT TERMS
+    7.1 Subscription fees are payable annually in advance.
+    7.2 All invoices are due within Net 45 days of the invoice date.
+    7.3 Late payments shall accrue interest at 4% above the Bank of England base rate.
+
+    8. LIMITATION OF LIABILITY
+    8.1 The Provider's aggregate liability under this Agreement shall not exceed 150% of the
+    total fees paid by the Customer in the 12-month period immediately preceding the claim.
+    8.2 Neither party shall be liable for indirect, consequential, or special damages.
+
+    9. SUPPORT
+    9.1 Premium support is available 24 hours a day, 7 days a week (24/7), 365 days per year.
+    9.2 Each Customer is assigned a dedicated account manager and a named technical contact.
+    9.3 Priority 1 incidents (complete service outage) shall receive an initial response within
+    15 minutes at any time.
+
+    10. GOVERNING LAW
+    This Agreement shall be governed by and construed in accordance with the laws of England
+    and Wales. The courts of England shall have exclusive jurisdiction.

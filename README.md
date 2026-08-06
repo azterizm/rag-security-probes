@@ -1,10 +1,10 @@
 # RAG Security Probes
 
-*Published by [Memon Systems Ltd](https://memonsystems.com)*
-
 RAG Security Probes is a collection of high-fidelity, UK-specific probe datasets designed to test security and isolation boundaries in Retrieval-Augmented Generation (RAG) pipelines. These probes test whether a RAG deployment maintains data isolation between tenants, resists prompt injection overrides, correctly disambiguates UK statutes, and correctly honors point-in-time constraints. This battery is designed for internal testing and self-service diagnostics on synthetic RAG deployments.
 
 The full suite of active probes, along with their testing criteria and parameters, can be viewed directly in [rag_probes.csv](rag_probes.csv) or mechanically parsed from [rag_probes.jsonl](rag_probes.jsonl).
+
+*Published by [Memon Systems Ltd](https://memonsystems.com)*
 
 ## The Two Testing Modes
 
@@ -69,7 +69,5 @@ Use it to find your own defects early. It will not carry weight with a reviewer 
 - **Live legislation ground truth.** Mode B, bound to `as_at_date` and revalidated against current UK legislation at run time.
 - **Independent execution.** We run the battery against your environment under written authorisation. The report states who ran it and what was withheld from your team beforehand.
 - **Controls, not a snapshot.** A probe run shows the system behaved on the day it was tested. We document what makes that durable: how the index is rebuilt, whether tenancy is enforced at retrieval or only in the system prompt, what monitoring catches the boundary moving.
-
-We are not an accredited certification body; no meaningful accreditation exists in this field yet. What we produce is what such an audit would rely on: a blind test, run by a party with no stake in the outcome, with a documented chain of custody.
 
 For the full, domain-specific paid diagnostic, visit [Memon Systems Ltd](https://memonsystems.com/engagements).

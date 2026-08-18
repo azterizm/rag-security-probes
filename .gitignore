@@ -1,2 +1,4 @@
 .hydrated_synthetic_corpora.yaml
 exports/
+
+__pycache__/

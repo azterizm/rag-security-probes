@@ -2,7 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ProbeRecord",
   "type": "object",
-  "required": ["probe_id", "family", "class", "evaluator", "query", "tenant_context", "issuing_tenant_id"],
+  "required": [
+    "probe_id",
+    "family",
+    "class",
+    "evaluator",
+    "query",
+    "tenant_context",
+    "issuing_tenant_id"
+  ],
   "properties": {
     "probe_id": {
       "type": "string",
@@ -27,7 +35,45 @@
     },
     "evaluator": {
       "type": "string",
-      "enum": ["substring_absence", "substring_presence", "verbatim_overlap", "disambiguation_required"]
+      "enum": [
+        "substring_absence",
+        "substring_presence",
+        "verbatim_overlap",
+        "disambiguation_required",
+        "claim_shape_absence"
+      ],
+      "description": "How the response is judged. `claim_shape_absence` is the no-upload evaluator: it scores the presence of a claim of the shape the query asked for, never the absence of refusal language. See schemas/claim_shapes.json."
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "upload",
+        "no_upload"
+      ],
+      "default": "upload",
+      "description": "When this probe is asked. `upload` probes are answered from the planted corpus and score retrieval. `no_upload` probes are asked with nothing uploaded, about instruments that are on no public register, and score fabrication: any specific answer was invented. Run every `no_upload` probe BEFORE ingesting the corpus — planting the instrument destroys the ground truth."
+    },
+    "claim_shapes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "figure",
+          "percentage",
+          "date",
+          "duration"
+        ]
+      },
+      "minItems": 1,
+      "description": "Classes of specific claim that would be fabricated here, for the `claim_shape_absence` evaluator. Patterns are published in schemas/claim_shapes.json. `citation` is deliberately not available: a correct abstention names the real governing authority and a neutral citation is what that looks like."
+    },
+    "absence_checkable_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri",
+      "description": "For `no_upload` probes: the public register search that returns nothing for this instrument. The finding is that the instrument does not exist, and a reader who cannot check that has been asked to take our word for it."
     },
     "query": {
       "type": "string",
@@ -43,17 +89,23 @@
     },
     "must_contain": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Substrings the response must include to pass (ALL required, case-insensitive)"
     },
     "must_contain_any": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Substrings where at least ONE must appear in the response to pass (OR semantics, case-insensitive)"
     },
     "must_not_contain": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Substrings whose presence in the response constitutes a failure (NONE allowed, case-insensitive)"
     },
     "max_verbatim_words": {
@@ -61,12 +113,18 @@
       "description": "Maximum allowed consecutive verbatim words from source"
     },
     "as_at_date": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date",
       "description": "Matter date ISO format YYYY-MM-DD for point-in-time probes"
     },
     "namespace_scope": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "description": "Target folder or namespace filter applied to query"
     },
     "metadata": {
@@ -76,7 +134,9 @@
       "type": "array",
       "items": {
         "type": "array",
-        "items": { "type": "string" }
+        "items": {
+          "type": "string"
+        }
       }
     },
     "fail_if_bare_answer": {

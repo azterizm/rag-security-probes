@@ -271,9 +271,146 @@ def export_manifest(probes, out_dir):
     print(f"Generated {out_file}")
 
 
+def export_audit(probes, out_dir):
+    probes_file = out_dir / "probes.jsonl"
+    gt_file = out_dir / "ground_truth.json"
+
+    probe_records = []
+    expectations = []
+
+    for p in probes:
+        pid = p["probe_id"]
+        family = p["family"]
+        evaluator = p.get("evaluator")
+
+        if evaluator == "disambiguation_required":
+            print(
+                f"Warning: Skipping probe {pid}: evaluator 'disambiguation_required' "
+                f"has no equivalent check in legal-rag-audit"
+            )
+            continue
+
+        if family == "retrieval_disambiguation":
+            check = "disambiguation"
+            intent = "positive"
+            exp = {
+                "probe_id": pid,
+                "check": check,
+                "must_contain": p.get("must_contain", []),
+                "must_not_contain": p.get("must_not_contain", []),
+            }
+        elif family in (
+            "passage_vs_clause_grounding",
+            "context_window_collapse",
+            "semantic_integrity",
+        ):
+            check = "clause_synthesis"
+            intent = "positive"
+            exp = {
+                "probe_id": pid,
+                "check": check,
+                "must_contain": p.get("must_contain", []),
+                "must_not_contain": p.get("must_not_contain", []),
+            }
+        elif family == "cross_tenant_leakage":
+            check = "cross_tenant_leakage"
+            intent = "positive"
+            exp = {
+                "probe_id": pid,
+                "check": check,
+                "must_contain": p.get("must_contain", []),
+                "must_not_contain": p.get("must_not_contain", []),
+                "queried_as": p.get("issuing_tenant_id"),
+            }
+        elif family == "injection_resistance":
+            check = "injection_resistance"
+            intent = "positive"
+            val = (
+                p.get("must_not_contain", [""])[0]
+                if p.get("must_not_contain")
+                else ""
+            )
+            exp = {
+                "probe_id": pid,
+                "check": check,
+                "must_contain": [],
+                "must_not_contain": [],
+                "side_effect": {
+                    "kind": "contains",
+                    "value": val,
+                },
+            }
+        elif family == "version_supersession":
+            check = "index_freshness"
+            intent = "positive"
+            exp = {
+                "probe_id": pid,
+                "check": check,
+                "must_contain": p.get("must_contain", []),
+                "must_not_contain": p.get("must_not_contain", []),
+            }
+        elif family == "hallucination_abstention":
+            check = "abstention"
+            intent = "no_correct_answer"
+            if evaluator == "claim_shape_absence":
+                exp = {
+                    "probe_id": pid,
+                    "check": check,
+                    "must_contain": [],
+                    "must_not_contain": [],
+                    "shapes": p.get("claim_shapes", []),
+                }
+            else:
+                exp = {
+                    "probe_id": pid,
+                    "check": check,
+                    "must_contain": [],
+                    "must_not_contain": p.get("must_not_contain", []),
+                }
+        else:
+            print(f"Warning: Skipping unknown probe family {family} for {pid}")
+            continue
+
+        probe_rec = {
+            "schema": "probes.v2",
+            "probe_id": pid,
+            "family": family,
+            "intent": intent,
+            "text": p["query"],
+            "tenant": p.get("issuing_tenant_id"),
+            "phase": "initial",
+            "eligible_for": [check],
+            "passes": 1,
+        }
+        probe_records.append(probe_rec)
+        expectations.append(exp)
+
+    with open(probes_file, "w", encoding="utf-8") as f:
+        for rec in probe_records:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    print(f"Generated {probes_file}")
+
+    gt_doc = {
+        "schema": "ground_truth.v4",
+        "seed": None,
+        "corpus_mode": "planted",
+        "plants": [],
+        "guard": None,
+        "expectations": expectations,
+    }
+    with open(gt_file, "w", encoding="utf-8") as f:
+        json.dump(gt_doc, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    print(f"Generated {gt_file}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Export RAG Security Probes")
-    parser.add_argument("--format", choices=["promptfoo", "pytest", "curl", "manifest", "all"], required=True)
+    parser.add_argument(
+        "--format",
+        choices=["promptfoo", "pytest", "curl", "manifest", "audit", "all"],
+        required=True,
+    )
     parser.add_argument("--endpoint-placeholder", default="https://YOUR-RAG-ENDPOINT/v1/query")
     parser.add_argument("--output-dir", default="exports")
     parser.add_argument(
@@ -287,7 +424,7 @@ def main():
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
-    out_dir.mkdir(exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     probes = load_probes()
     if args.phase != "all":
@@ -303,6 +440,8 @@ def main():
         export_curl(probes, out_dir, args.endpoint_placeholder)
     if args.format in ["manifest", "all"]:
         export_manifest(probes, out_dir)
+    if args.format in ["audit", "all"]:
+        export_audit(probes, out_dir)
 
 
 if __name__ == "__main__":

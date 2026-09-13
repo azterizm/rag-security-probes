@@ -48,10 +48,11 @@
       "type": "string",
       "enum": [
         "upload",
-        "no_upload"
+        "no_upload",
+        "mode_c"
       ],
       "default": "upload",
-      "description": "When this probe is asked. `upload` probes are answered from the planted corpus and score retrieval. `no_upload` probes are asked with nothing uploaded, about instruments that are on no public register, and score fabrication: any specific answer was invented. Run every `no_upload` probe BEFORE ingesting the corpus — planting the instrument destroys the ground truth."
+      "description": "When and where this probe is asked. `upload` probes are answered from the planted synthetic corpus. `no_upload` probes are asked with nothing uploaded about fictional instruments. `mode_c` probes are adversarial premise probes asked against an index holding real law."
     },
     "claim_shapes": {
       "type": "array",

@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from claim_shapes import load_shape_spec  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-PROBES_FILE = REPO_ROOT / "rag_probes.jsonl"
+MODE_A_FILE = REPO_ROOT / "rag_probes.jsonl"
+MODE_C_FILE = REPO_ROOT / "rag_probes_mode_c.jsonl"
 
 GENERAL_BANNER = """# ⚠️  SECURITY PROBES — AUTHORIZATION WARNING
 # This battery contains injection payloads and cross-tenant canary tests.
@@ -35,17 +36,29 @@ NO_UPLOAD_NOTE = (
     "query itself stated is excluded first."
 )
 
+MODE_C_NOTE = (
+    "mode_c — adversarial premise probe against real UK legal index. Evaluates whether "
+    "the pipeline resists sycophantic statutory misattribution and catches false premises."
+)
 
-def load_probes():
+
+def load_probes(dataset="mode_a"):
+    files = []
+    if dataset in ("mode_a", "all") and MODE_A_FILE.exists():
+        files.append(MODE_A_FILE)
+    if dataset in ("mode_c", "all") and MODE_C_FILE.exists():
+        files.append(MODE_C_FILE)
+
     probes = []
-    with open(PROBES_FILE, "r") as f:
-        for line in f:
-            if line.strip():
-                probes.append(json.loads(line))
+    for fpath in files:
+        with open(fpath, "r") as f:
+            for line in f:
+                if line.strip():
+                    probes.append(json.loads(line))
     # No-upload first, everywhere. The ordering is the ground truth's precondition rather
     # than a preference: a generated script that ran them last would be scoring retrieval
     # of a document the same script had just uploaded.
-    return sorted(probes, key=lambda p: p.get("phase", "upload") != "no_upload")
+    return sorted(probes, key=lambda p: (p.get("phase", "upload") != "no_upload", p.get("phase", "upload") == "mode_c"))
 
 
 def _phase(p):
@@ -115,6 +128,8 @@ def export_promptfoo(probes, out_dir, endpoint_placeholder):
         description = f"{pid}: {p['family']} / {p['class']}"
         if _phase(p) == "no_upload":
             description += "  [no_upload — run before ingesting the corpus]"
+        elif _phase(p) == "mode_c":
+            description += "  [mode_c — adversarial premise probe against real UK law]"
 
         tests.append({
             "description": description,
@@ -210,6 +225,10 @@ def export_pytest(probes, out_dir):
                 f.write(f'    """{NO_UPLOAD_NOTE}\n\n')
                 f.write(f'    Absence checkable at: {p.get("absence_checkable_at")}\n')
                 f.write('    """\n')
+            elif _phase(p) == "mode_c":
+                f.write(f'    """{MODE_C_NOTE}\n\n')
+                f.write(f'    Absence / status checkable at: {p.get("absence_checkable_at")}\n')
+                f.write('    """\n')
             f.write(f'    query = {repr(p["query"])}\n')
             f.write(f'    response = requests.post(ENDPOINT_URL, json={{"query": query}}, headers={{"Content-Type": "application/json", "X-Tenant-ID": "{p.get("issuing_tenant_id", "default")}"}})\n')
             f.write(f'    answer = response.json().get("answer", "")\n')
@@ -248,6 +267,8 @@ def export_curl(probes, out_dir, endpoint_placeholder):
                 f.write(f'echo "########## PHASE: {phase} ##########"\n')
                 if phase == "no_upload":
                     f.write('echo "Run these BEFORE ingesting the corpus. Any specific answer is invented."\n')
+                elif phase == "mode_c":
+                    f.write('echo "Run these against an index holding real UK legislation."\n')
                 else:
                     f.write('echo "Ingest .hydrated_synthetic_corpora.yaml before running these."\n')
                 f.write('echo ""\n\n')
@@ -407,6 +428,13 @@ def export_audit(probes, out_dir):
 def main():
     parser = argparse.ArgumentParser(description="Export RAG Security Probes")
     parser.add_argument(
+        "--dataset",
+        choices=["mode_a", "mode_c", "all"],
+        default="mode_a",
+        help="Which dataset to export: `mode_a` (default, synthetic fictional corpus) "
+             "or `mode_c` (adversarial premise probes against real law).",
+    )
+    parser.add_argument(
         "--format",
         choices=["promptfoo", "pytest", "curl", "manifest", "audit", "all"],
         required=True,
@@ -415,10 +443,10 @@ def main():
     parser.add_argument("--output-dir", default="exports")
     parser.add_argument(
         "--phase",
-        choices=["upload", "no_upload", "all"],
+        choices=["upload", "no_upload", "mode_c", "all"],
         default="all",
         help="Export one phase only. `no_upload` is the battery you run before ingesting "
-             "anything; `upload` is the one you run after.",
+             "anything; `upload` is the one you run after; `mode_c` is the adversarial premise battery.",
     )
 
     args = parser.parse_args()
@@ -426,11 +454,13 @@ def main():
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    probes = load_probes()
+    # If user specifies phase=mode_c, automatically load mode_c dataset
+    dataset = "mode_c" if args.phase == "mode_c" and args.dataset == "mode_a" else args.dataset
+    probes = load_probes(dataset)
     if args.phase != "all":
         probes = [p for p in probes if _phase(p) == args.phase]
         if not probes:
-            raise SystemExit(f"No probes in phase {args.phase!r}.")
+            raise SystemExit(f"No probes in phase {args.phase!r} for dataset {dataset!r}.")
 
     if args.format in ["promptfoo", "all"]:
         export_promptfoo(probes, out_dir, args.endpoint_placeholder)

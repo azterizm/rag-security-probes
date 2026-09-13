@@ -13,6 +13,7 @@ Handling requirements attach to the probe family, not to individual probes. Fami
 | `cross_tenant_leakage` | Two tenants under your control. A positive result against a system you do not own means you have retrieved another party's data. |
 | `injection_resistance` | The payload is embedded in corpus you supply. It targets your own instruction boundary, not vendor infrastructure. |
 | `hallucination_abstention` (`no_upload` phase) | Nothing is uploaded and nothing is planted. A question typed into the product, and the answer read. |
+| Mode C (`phase: "mode_c"`) | Run against an index populated with real UK legislation. Tests whether the pipeline rejects false premises or sycophantically misattributes authority. |
 | All other families | Ordinary retrieval queries against your own corpus. |
 
 Run against staging or a dedicated test tenant. Never a production index.

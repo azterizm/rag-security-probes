@@ -2,11 +2,11 @@
 
 RAG Security Probes is a collection of high-fidelity, UK-specific probe datasets designed to test security and isolation boundaries in Retrieval-Augmented Generation (RAG) pipelines. These probes test whether a RAG deployment maintains data isolation between tenants, resists prompt injection overrides, correctly disambiguates UK statutes, correctly honors point-in-time constraints, and declines to invent an answer about an instrument that does not exist. This battery is designed for internal testing and self-service diagnostics on synthetic RAG deployments.
 
-The full suite of active probes, along with their testing criteria and parameters, can be viewed directly in [rag_probes.csv](rag_probes.csv) or mechanically parsed from [rag_probes.jsonl](rag_probes.jsonl).
+The full suite of active probes, along with their testing criteria and parameters, can be viewed directly in [rag_probes.csv](rag_probes.csv) (Mode A) and [rag_probes_mode_c.csv](rag_probes_mode_c.csv) (Mode C) or mechanically parsed from [rag_probes.jsonl](rag_probes.jsonl) and [rag_probes_mode_c.jsonl](rag_probes_mode_c.jsonl).
 
 *Published by [Memon Systems Ltd](https://memonsystems.com)*
 
-## The Two Testing Modes
+## The Three Testing Modes
 
 ### Mode A: Fictional Corpus Battery
 This published repository contains our **Mode A** battery. It relies on a planted corpus of purely **fictional** instruments (e.g., *Ravensbourne Commercial Tenancies Act 2019*). 
@@ -37,6 +37,15 @@ So a `no_upload` probe carries a different **evaluator**, not inverted operators
 
 ### Mode B: Live Legislation Validation
 Testing against real UK law requires binding ground truth to `as_at_date` parameters and performing run-time revalidation against current legislation to manage statutory amendments. Because this methodology relies on active maintenance and continuous diffing against live parliamentary updates, it cannot be distributed as a static artifact. This dataset is maintained internally for direct engagements — see [Why a Public Battery Cannot Certify You](#why-a-public-battery-cannot-certify-you) below.
+
+### Mode C: Adversarial Chimeric & Premise Perturbation Battery
+Mode C tests RAG deployments holding **real-world UK legal indices** against adversarial queries combining genuine statutory provisions with counterfeit, chimeric, or cross-domain instrument titles (published in [rag_probes_mode_c.csv](rag_probes_mode_c.csv) / [rag_probes_mode_c.jsonl](rag_probes_mode_c.jsonl)).
+- **Sycophancy & Misattribution Resistance**: Dense semantic search easily matches concrete legal keywords (e.g. notice periods or statutory caps) and retrieves the real governing statute (e.g. *Employment Rights Act 1996*). Mode C verifies whether the generation layer sycophantically validates the user's false premise (e.g. attributing notice periods to the non-existent *Family Rights Act 1996*) or proactively rejects and corrects the premise.
+- **Four Stress Classes**:
+  1. `chimeric_statutory_collision`: Non-existent blended titles (*Family Rights Act 1996*, *Consumer Fair Trading Act 2015*, *Data Privacy Act 2018*).
+  2. `intra_statute_overflow`: Real Act with out-of-bounds section numbers (*Section 342 ERA 1996*).
+  3. `jurisdictional_devolution_bleed`: Conflation of devolved Scottish and English statutory regimes (*Adults with Incapacity (England and Wales) Act 2005*).
+  4. `repealed_instrument_anchor`: Queries citing repealed zombie statutes (*Section 6 Sex Discrimination Act 1975*).
 
 ## Getting Started
 
@@ -74,6 +83,9 @@ python scripts/export_probes.py --format all --output-dir exports/
 
 # Export one phase only — this is the pre-ingestion battery
 python scripts/export_probes.py --format pytest --phase no_upload
+
+# Export Mode C adversarial battery — run against an index holding real UK legislation
+python scripts/export_probes.py --dataset mode_c --format pytest
 ```
 Once generated, simply fill in your endpoint URL and run your framework.
 

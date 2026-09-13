@@ -41,6 +41,18 @@ If it does, **change the question, not the rule.** Ask about something whose rea
 
 `prepare.py` scores your `abstains` example with the real rule and fails the build if it reads as a fabrication. That check is the reason this half of the battery is worth publishing.
 
+### Adding a Mode C probe (`rag_probes_mode_c.jsonl`)
+
+Mode C probes test a system holding real UK law against adversarial queries blending genuine statutory substance with invented, transposed, or repealed titles. Append your probe to `rag_probes_mode_c.jsonl`.
+
+Five things a `mode_c` row needs, and the build enforces every one:
+
+1.  `"phase": "mode_c"` and an evaluator like `"disambiguation_required"` or `"substring_absence"`.
+2.  `absence_checkable_at` — a URL on `legislation.gov.uk` verifying the premise is defective (a zero-match title search, an out-of-bounds 404 page, or a repeal status banner).
+3.  `must_not_contain` — ban **affirmative attribution phrases** (e.g., `"under the Family Rights Act"`, `"Family Rights Act provides"`), **never** the bare statute name alone. An ideal legal response names the false instrument to deny it (*"There is no Family Rights Act 1996"*); banning the bare name turns the best answer into a false failure.
+4.  `pass_if_any_present` — phrases proving the system caught the defect (e.g., `["no such act", "does not exist"]`) or identified the true governing provision (e.g., `["Employment Rights Act 1996"]`).
+5.  `fail_if_bare_answer` — documented bad output patterns and indicative strings. Mode C probes never declare `claim_shapes`, because the true legal provision often contains valid figures or time limits.
+
 ## 3. Run the Prepare Script
 **Never hand-edit the CSV files.** They are strictly auto-generated for GitHub rendering. 
 Once you have made your changes, run the single build command to hydrate corpora, validate schemas and phase invariants, check the generated exports still apply the published rule, and generate CSVs:

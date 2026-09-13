@@ -109,6 +109,25 @@ def check_phases(rows) -> None:
                 bad(pid, "uses the no-upload evaluator in the upload phase.")
             continue
 
+        if phase == "mode_c":
+            if shapes:
+                bad(pid, "is a `mode_c` probe but declares `claim_shapes`. Mode C queries "
+                         "test against real legal indices where substantive answers contain "
+                         "valid figures/durations, so it is scored on premise rejection.")
+            if row.get("evaluator") == "claim_shape_absence":
+                bad(pid, "uses the `claim_shape_absence` evaluator in Mode C.")
+            if not row.get("absence_checkable_at"):
+                bad(pid, "names no register search or provision URL to verify non-existence "
+                         "or repeal status on legislation.gov.uk.")
+            if not row.get("must_not_contain"):
+                bad(pid, "declares no `must_not_contain`. A Mode C probe must ban the "
+                         "counterfeit, out-of-bounds, or repealed premise from being "
+                         "endorsed as authoritative.")
+            if not (row.get("pass_if_any_present") or row.get("must_contain") or row.get("must_contain_any")):
+                bad(pid, "declares no passing criteria (`pass_if_any_present`, `must_contain`, "
+                         "or `must_contain_any`) for premise correction or disambiguation.")
+            continue
+
         # ---------------------------------------------------------- no_upload rules
         if row.get("evaluator") != "claim_shape_absence":
             bad(pid, "is a `no_upload` probe scored by a substring evaluator. Nothing "
@@ -222,8 +241,12 @@ def validate_datasets():
 
         check_phases(rows)
         upload = sum(1 for r in rows if r.get("phase", "upload") == "upload")
-        no_upload = len(rows) - upload
-        print(f"  [OK] phases — {upload} upload, {no_upload} no_upload")
+        no_upload = sum(1 for r in rows if r.get("phase") == "no_upload")
+        mode_c = sum(1 for r in rows if r.get("phase") == "mode_c")
+        if mode_c:
+            print(f"  [OK] phases — {mode_c} mode_c")
+        else:
+            print(f"  [OK] phases — {upload} upload, {no_upload} no_upload")
 
         if no_upload:
             scored = check_worked_examples(rows)
